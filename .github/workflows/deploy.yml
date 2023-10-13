@@ -1,29 +1,28 @@
-on: 
-    push:
-      branches:
-        - main
-  name: 🚀 Deploy website
-  
-  jobs:
-    web-deploy:
-      name: 🎉 Deploy
-      runs-on: ubuntu-latest
-      steps:
+on:
+  push:
+    branches:
+      - master
+name: 🚀 Deploy website on push
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
       - name: 🚚 Get latest code
-        uses: actions/checkout@v3
-  
-      - name: Use Node.js 16
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 12
+        uses: actions/setup-node@v2-beta
         with:
-          node-version: '16'
-        
+          node-version: "14.17.0"
+
       - name: 🔨 Build Project
         run: |
           npm install
           npm run build
-      
       - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
           server: ${{ secrets.GIT_CPANEL_REACT_SERVER }}
           username: ${{ secrets.GIT_CPANEL_REACT_USER }}
