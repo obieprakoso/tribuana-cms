@@ -2,16 +2,21 @@ import React, { FC, useState, useEffect } from "react";
 import AddUserPageLayout from "../layout/AddUserPageLayout";
 import { useNavigate } from "react-router-dom";
 import Http from "../../../helpers/Fatch";
-import { getCookie, setCookie } from "../../../helpers/CookieFunction";
 import InputValidation from "../../../helpers/ValidatonForm";
 import InterfaceRegisterUserValue from "../../../interface/IRegisterUser";
-import useStore from "../store/useStore";
+import { useStoreUser, useStoreUserModal } from "../store/useStore";
 
-const AddUserPageContainer: FC = () => {
-    const register = useStore(state => state.register);
-    const user = useStore(state => state.user);
+interface UserProps {
+    getAllUser: any;
+}
+const AddUserPageContainer: FC<UserProps> = ({ getAllUser }) => {
+    const register = useStoreUser(state => state.register);
+    const showModal = useStoreUserModal(state => state.show);
+    const toggleShow = useStoreUserModal((state) => state.toggleShow)
+    // const user = useStoreUser(state => state.user);
     const navigate = useNavigate();
-    const [loadingLogin, setLoadingLogin] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [loadingAddUser, setLoadingAddUser] = useState(false);
     const [data, setData] = useState<InterfaceRegisterUserValue>({
         email: "",
         numberUnit: "",
@@ -35,9 +40,8 @@ const AddUserPageContainer: FC = () => {
         confirmPassword: "",
         address: ""
     });
-    const onChangeSelect = (
-        event: React.ChangeEvent<HTMLSelectElement>
-    ) => {
+    const onChangeSelect = (event: any) => {
+
         setData({
             ...data,
             ["role"]: event.value,
@@ -50,6 +54,9 @@ const AddUserPageContainer: FC = () => {
         e.preventDefault();
 
         const { name, value } = e.target;
+        console.log("Name=", name);
+        console.log("Value=", value);
+
         let strErr = "";
         if (name === "email") {
             strErr = InputValidation.EmailValidation(value, 100, "Email", true);
@@ -132,10 +139,10 @@ const AddUserPageContainer: FC = () => {
 
     const onSubmit = async () => {
         try {
-            // const valid = onValidationButton();
-            const valid = true;
+            const valid = onValidationButton();
+            // const valid = true;
             if (valid) {
-                setLoadingLogin(true);
+                setLoadingAddUser(true);
                 const dataPayload = {
                     "first_name": data.firstName,
                     "last_name": data.lastName,
@@ -150,10 +157,17 @@ const AddUserPageContainer: FC = () => {
                 const response = await Http.post("auth/register", dataPayload, {
                     withCredentials: true,
                 });
-                setLoadingLogin(false);
+
+                setLoadingAddUser(false);
+                if (response.status == 201) {
+                    onClear();
+                    toggleShow();
+                    getAllUser();
+                }
+
             }
         } catch (error) {
-            setLoadingLogin(false);
+            setLoadingAddUser(false);
         }
     };
     const onValidationButton = (): boolean => {
@@ -221,12 +235,11 @@ const AddUserPageContainer: FC = () => {
         }
         return true;
     };
-    console.log("TTTTTT=", data);
 
     return (
         <AddUserPageLayout
             errInput={errData}
-            isLoadingLogin={loadingLogin}
+            isLoadingAddUser={loadingAddUser}
             onSubmit={onSubmit}
             emailValueInput={data.email}
             firstNameValueInput={data.firstName}
@@ -240,6 +253,8 @@ const AddUserPageContainer: FC = () => {
             onChangeForm={onChange}
             onChangeSelect={onChangeSelect}
             onClear={onClear}
+            modalOpen={showModal}
+            toggleShow={toggleShow}
         />
     );
 };

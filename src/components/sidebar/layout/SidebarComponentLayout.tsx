@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import {
     HomeOutlined,
     UserOutlined,
-    AppstoreOutlined
+    AppstoreOutlined,
+    DollarOutlined
 } from "@ant-design/icons";
 import { Layout, Menu, MenuProps, theme } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getCookie } from "../../../helpers/CookieFunction";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -16,14 +17,19 @@ const items: MenuProps["items"] = [
         icon: <HomeOutlined />,
     },
     {
-        label: "Penguni",
-        key: "/penghuni",
+        label: "User",
+        key: "/user",
         icon: <UserOutlined />,
     },
     {
-        label: "Menu Pembayaran",
-        key: "/pembayaran/menu",
+        label: "Payment Menu",
+        key: "/payment/menu",
         icon: <AppstoreOutlined />,
+    },
+    {
+        label: "Payment",
+        key: "/payment",
+        icon: <DollarOutlined />,
     }
 
 ];
@@ -35,10 +41,12 @@ interface Content {
 const SidebarComponentLayout: React.FC<Content> = ({ children }) => {
     const navigate = useNavigate();
     const user = getCookie("auth");
+    const location = useLocation();
+
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-    const [current, setCurrent] = useState("/beranda");
+    const [current, setCurrent] = useState(location.pathname);
 
     const onClick: MenuProps["onClick"] = (e) => {
         navigate(e.key);
@@ -92,7 +100,7 @@ const SidebarComponentLayout: React.FC<Content> = ({ children }) => {
                     {children}
                 </Content>
                 <Footer style={{ textAlign: "center" }}>
-                    Prumahan TRIBUANA PERMAI @2023
+                    Perumahan TRIBUANA PERMAI @2023
                 </Footer>
             </Layout>
         </Layout>

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useState, useEffect } from "react";
 // import TableComponentLayout from "../layout/TableComponentLayout";
 import { Empty, Skeleton, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import SkeletonComponent from "../../skeleton";
+import SkeletonTable from "./SkeletonTable";
 
 interface TableProps {
     columns: ColumnsType<any>;
@@ -12,9 +14,9 @@ interface TableProps {
 
 const TableComponentLayout: FC<TableProps> = ({ columns, data, loading }) => {
     return (
-        <Table columns={columns} dataSource={data} scroll={{ x: 1080 }} locale={{
-            emptyText: loading ? <Skeleton style={{ marginTop: '10px', width: '100%' }} active={true} /> : <Empty />
-        }} />
+        <SkeletonTable loading={loading} columns={columns}>
+            <Table rowKey={record => data.indexOf(record)} columns={columns} dataSource={data} scroll={{ x: 1080 }} loading={loading} />
+        </SkeletonTable>
     )
 }
 export default TableComponentLayout;

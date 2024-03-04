@@ -12,7 +12,9 @@ import ProtectRoute from "./ProtectRouter";
 import Sidebar from "../components/sidebar/layout/SidebarComponentLayout";
 import User from "../pages/users/container/UserPageContainer";
 import AddUserPageContainer from "../pages/users/container/AddUserPageContainer";
-import PaymentMenuPageContainer from "../pages/PaymentMenus/container/PaymetMenuPageContainer";
+import PaymentMenuPageContainer from "../pages/PaymentMenus/container/PaymentMenuPageContainer";
+import PaymentPageContainer from "../pages/Payment/container/PaymentPageContainer";
+// import PaymentMenuPageContainer from "../pages/PaymentMenus/container/PaymetMenuPageContainer";
 
 const Router = () => {
     const location = useLocation();
@@ -32,7 +34,7 @@ const Router = () => {
                     }
                 />
                 <Route
-                    path="/penghuni"
+                    path="/user"
                     element={
                         <ProtectRoute>
                             <User />
@@ -40,18 +42,26 @@ const Router = () => {
                     }
                 />
                 <Route
-                    path="/penghuni/add"
+                    path="/user/add"
                     element={
                         <ProtectRoute>
-                            <AddUserPageContainer />
+                            <AddUserPageContainer getAllUser={undefined} />
                         </ProtectRoute>
                     }
                 />
                 <Route
-                    path="/pembayaran/menu"
+                    path="/payment/menu"
                     element={
                         <ProtectRoute>
                             <PaymentMenuPageContainer />
+                        </ProtectRoute>
+                    }
+                />
+                <Route
+                    path="/payment"
+                    element={
+                        <ProtectRoute>
+                            <PaymentPageContainer />
                         </ProtectRoute>
                     }
                 />

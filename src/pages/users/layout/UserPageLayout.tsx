@@ -1,17 +1,19 @@
 import React, { FC, useState, useEffect } from "react";
 import TableComponentLayout from "../../../components/table/layout/TableComponentLayout";
 import ColumnUser from "../../../components/table/column/ColumnUser";
-import { Button, ConfigProvider } from "antd";
+import { Button, ConfigProvider, Modal } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import AddUserPageContainer from "../container/AddUserPageContainer";
 
 interface IPropsUserPageLayout {
     dataSource: Array<unknown>;
     loading: boolean;
+    GetAllUser: any;
+    toggleShow: () => void;
 }
 
-const UserPageLayout: FC<IPropsUserPageLayout> = ({ dataSource, loading }) => {
-    const navigate = useNavigate();
+const UserPageLayout: FC<IPropsUserPageLayout> = ({ dataSource, loading, GetAllUser, toggleShow }) => {
+
     return (
         <div>
             <div className="pb-5 float-right" >
@@ -22,13 +24,14 @@ const UserPageLayout: FC<IPropsUserPageLayout> = ({ dataSource, loading }) => {
                         },
                     }}
                 >
-                    <Button type="primary" icon={<UserAddOutlined />} onClick={() => navigate("/penghuni/add")}>Tambah Penghuni</Button>
+                    <Button type="primary" icon={<UserAddOutlined />} onClick={toggleShow}>Add User</Button>
                 </ConfigProvider>
 
             </div>
             <div>
                 <TableComponentLayout loading={loading} columns={ColumnUser} data={dataSource} />
             </div>
+            <AddUserPageContainer getAllUser={GetAllUser} />
         </div>
     )
 }

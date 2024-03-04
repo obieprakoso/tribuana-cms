@@ -2,14 +2,15 @@ import React, { FC, useState, useEffect } from "react";
 import ISelectValue from "../../../../interface/ISelectValue";
 import { getCookie } from "../../../../helpers/CookieFunction";
 import Http from "../../../../helpers/Fatch";
-import SelectRoleComponentLayout from "../layout";
+import SelectPaymentMenuComponentLayout from "../layout";
 
-interface SelectRoleProps {
+interface SelectPaymentMenuProps {
     onChange: any;
+    value: number | undefined;
 }
 
-const SelectRoleContainer: FC<SelectRoleProps> = ({ onChange }) => {
-    const [dataRole, setDataRole] = useState<Array<ISelectValue>>([]);
+const SelectPaymentMenuContainer: FC<SelectPaymentMenuProps> = ({ onChange, value }) => {
+    const [dataPaymentMenu, setDataPaymentMenu] = useState<Array<ISelectValue>>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const user = getCookie("auth");
 
@@ -17,13 +18,13 @@ const SelectRoleContainer: FC<SelectRoleProps> = ({ onChange }) => {
     //     GetRole();
     // }, []);
 
-    const GetRole = async () => {
+    const GetPaymentMenu = async () => {
         setLoading(true);
         try {
-            const res = await Http.get("role/true", {
+            const res = await Http.get("/payment-menu/true", {
                 headers: { Authorization: `Bearer ${user?.accessToken}` },
             });
-            setDataRole(res.data.data);
+            setDataPaymentMenu(res.data.data);
             setLoading(false);
         } catch (error: any) {
             setLoading(false);
@@ -32,7 +33,7 @@ const SelectRoleContainer: FC<SelectRoleProps> = ({ onChange }) => {
     };
 
     return (
-        <SelectRoleComponentLayout data={dataRole} GetRole={GetRole} loading={loading} onChange={onChange} />
+        <SelectPaymentMenuComponentLayout data={dataPaymentMenu} GetPaymentMenu={GetPaymentMenu} loading={loading} onChange={onChange} value={value!} />
     )
 }
-export default SelectRoleContainer;
+export default SelectPaymentMenuContainer;

@@ -5,10 +5,14 @@ import {
   getCookie,
   setCookie,
 } from "./CookieFunction";
+import { notification } from "antd";
 // const Http = axios.create();
+
+// const [api, contextHolder] = notification.useNotification();
+
 const Http = axios.create({
   // baseURL: "http://localhost:3306/api/",
-  baseURL: "http://tribuana-api.obieprakoso.my.id/api/",
+  baseURL: "http://localhost:3000/api/",
   timeout: 50000,
   headers: {
     "content-type": "application/json",
@@ -37,6 +41,8 @@ Http.interceptors.response.use(
     return response;
   },
   async function (error) {
+    console.log("rrrr=", error);
+
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -68,6 +74,12 @@ Http.interceptors.response.use(
         "Authorization"
       ] = `Bearer ${keysNew?.accessToken}`;
       return Http(originalRequest);
+    } else {
+      notification.error({
+        description: error.response.data.message,
+        duration: 3,
+        message: error.response.statusText,
+      });
     }
     return Promise.reject(error);
   }
